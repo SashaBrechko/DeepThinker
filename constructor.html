@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>DeepThinker</title>
+    <link href="favicon.ico" rel="icon" type="image/x-icon" />
+    <link href="styles.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+    <div class="header">
+        <div class="left-side-header">
+            <h1 class="main-heading">DeepThinker</h1>
+            <p class="main-description">The tool for learning and creating neural networks</p>
+        </div>
+        <div class="right-side-header">
+            <div class="menu">
+                <button class="menu-btn">Конструктор НМ ▼</button>
+                <div class="menu-items">
+                    <a href="index.html">Головна сторінка</a>
+                    <a href="materials.html">Навчальні матеріали</a>
+                    <a href="instructions.html">Інструкція до платформи</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="constructor">
+        <div id="model">
+        <div class="row space-above" id="load-buttons">
+            <div class="button small" id="upload-model">⇧ Upload model</div>
+            <div class="button small" id="download-model">⇩ Download model</div>
+        </div>
+            <form id="model-params">
+                <!--Dataset-->
+                <div id="upload-file">
+                    <label for="dataset-file">- Dataset (.json) -</label><br>
+                    <input type="file" id="dataset-file" name="dataset-file" required>
+                </div>
+                <div id="input-output">
+                    <fieldset id="input-values">
+                        <legend><div class="tooltip">?<span class="tooltiptext"><i>Input values</i> (вхідні значення) представляють собою дані або фічі, які подаються на вхід моделі для обробки. Вони є вхідними точками, через які дані проходять усередину мережі для обчислення та передачі інформації.</span></div>
+                        Input values:</legend>
+                            
+                    </fieldset>
+                    <fieldset id="output-values">
+                        <legend><div class="tooltip">?<span class="tooltiptext"><i>Output values</i> (вихідні значення) - це результати, отримані на виході мережі після обробки вхідних даних. Коли дані проходять через нейронну мережу, вони проходять крізь різні шари нейронів, де виконуються обчислення. </span></div>
+                        Output values:</legend>
+                            
+                    </fieldset>
+                </div>
+
+                <p class="centrify space-above">- Model parameters -</p>
+                <span class="centrify" id="default"><u>(use default params)</u></span><br><br>
+
+                <!--Learning rate-->
+                <div class="tooltip-input">
+                    <div class="tooltip">?<span class="tooltiptext"><i>Learning rate</i> (коефіцієнт швидкості навчання) визначає темп навчання мережі. Він контролює крок зміни вагів нейронів в процесі навчання.</span></div>
+                    <label for="learning-rate">Learning rate:</label><br>
+                    <input class="number-parameter" type="number" step="0.00001" min="0.00001" max="1" id="learning-rate" name="learning-rate" placeholder="0.1" required><br><br>
+                </div>
+
+                <!--Validation split-->
+                <div class="tooltip-input">
+                    <div class="tooltip">?<span class="tooltiptext">Параметр <i>Validation split</i> визначає, яка частка вхідних даних буде використана для перевірки моделі, а не для її навчання.</span></div>
+                    <label for="validation-split">Validation split:</label><br>
+                    <input class="number-parameter" type="number" step="0.01" min="0" max="1" id="validation-split" name="validation-split" placeholder="0.15" required><br><br>
+                </div>
+
+                <!--Batch size-->
+                <div class="tooltip-input">
+                    <div class="tooltip">?<span class="tooltiptext"><i>Batch size</i> (розмір пакета) визначає кількість прикладів даних, які одночасно подаються на вхід моделі для обробки під час тренування. Використання пакетів дозволяє нейронній мережі ефективно працювати з великими обсягами даних.</span></div>
+                    <label for="batch-size">Batch size:</label><br>
+                    <input class="number-parameter" type="number" id="batch-size" name="batch-size" placeholder="5" required><br><br>
+                </div>
+
+                <!--Epochs-->
+                <div class="tooltip-input">
+                    <div class="tooltip">?<span class="tooltiptext">Параметр <i>Epochs</i> відображає кількість повних прогонів навчального набору даних через модель під час тренування. Кожна епоха означає, що модель побачила всі доступні дані один раз і здійснила корекцію вагів на підставі помилок, які вона зробила.</span></div>
+                    <label for="epochs">Epochs:</label><br>
+                    <input class="number-parameter" type="number" max="1000" id="epochs" name="epochs" placeholder="100" required><br><br>
+                </div>
+
+                <!--Loss-->
+                <div class="tooltip-input">
+                    <div class="tooltip">?<span class="tooltiptext">Функція втрат (<i>Loss function</i>) в нейронних мережах є математичною функцією, яка вимірює рівень помилки або розбіжності між прогнозованими значеннями моделі та справжніми значеннями цільової змінної. Вона використовується для кількісної оцінки того, наскільки добре модель працює на даному наборі даних.</span></div>
+                    <label for="loss">Loss function:</label><br>
+                    <select class="number-parameter" name="loss" id="loss">
+                        <option value="meanSquaredError">Mean Squared Error (MSE)</option>
+                        <option value="meanAbsoluteError">Mean Absolute Error (MAE)</option>
+                        <option value="huberLoss">Huber Loss</option>
+                        <option value="logLoss">Log-Cosh Loss</option>
+                    </select>
+                </div>
+
+                <hr class="small-model-divider" />
+
+                <!--Layers-->
+                <div class="tooltip-input">
+                    <div class="tooltip">?<span class="tooltiptext">У нейронних мережах, шари (<i>Layers</i>) - це організаційні одиниці, що складаються з набору нейронів. Кожен шар приймає вхідні дані, виконує певні обчислення та передає результати наступному шару.<br /><i>Units</i> - кількість нейронів шару.<br /><i>Activation</i> - функція активації шару. Вона є математичною функцією, яка застосовується до виходів шару, щоб надати нелінійність та можливість моделі узагальнювати складні залежності у вхідних даних.</span></div>
+                    <label for="layers">Layers:</label><br>
+                </div>
+                <div id="layers">
+                    <div class="layer" id="layer1">Layer 1 | <input class="number-parameter" type="number" id="units1" name="units1" placeholder="2" min="1" max="100" required> units<br>
+                        <div class="row activation">
+                            <label for="activation">Activation >></label><br>
+                            <select class="number-parameter" name="activation1" id="activation1">
+                                <option value="">None (Linear Activation)</option>
+                                <option value="relu">Rectified Linear Unit (ReLU)</option>
+                                <option value="sigmoid">Sigmoid</option>
+                                <option value="tanh">Hyperbolic Tangent (Tanh)</option>
+                                <option value="softplus">Softplus</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="button small" id="add-layer">Add layer</div>
+                    <div class="button small" id="remove-layer">Remove last layer</div>
+                </div>
+
+                <br /><input type="submit" value="Train model" class="button" id="train-button" /><br>
+                <br /><br />
+
+                <div id="predict-fields"></div>
+
+            </form>
+        </div>
+        <div id="output-window">
+            <p class="output-heading space-above">- Output -</p>
+            <div id="output-section"></div><br>
+            <span class="centrify space-above" id="open-hints"><u>💡 Як покращити результати роботи нейронної мережі ▼</u></span><br>
+            <ul id="hints-list" class="centrify">
+                <li class="hint"><b>Зберіть достатньо даних: </b>Нейронні мережі зазвичай потребують великої кількості даних для навчання. Зберіть якомога більше репрезентативних прикладів, щоб модель мала достатньо інформації для вивчення корисних закономірностей.</li>
+                <li class="hint"><b>Перевірте та очистіть дані: </b>Перед поданням даних на навчання переконайтеся, що вони правильно відформатовані і очищені від шуму або аномальних значень. Це допоможе уникнути перешкод і забезпечити більш точні результати.</li>
+                <li class="hint"><b>Підберіть правильну архітектуру мережі: </b>Спробуйте різні архітектури мережі, включаючи різну кількість шарів та нейронів, різні значення параметрів. Експериментуйте з різними конфігураціями, щоб знайти оптимальну архітектуру для вашої конкретної задачі.</li>
+                <li class="hint"><b>Експериментуйте: </b>Не бійтеся експериментувати з різними параметрами та підходами. Іноді найкращі результати можуть бути досягнуті шляхом поєднання різних методів і оптимізацій.</li>
+                <li class="hint">Пам'ятайте, що оптимізація нейронної мережі - це ітеративний процес, і важливо робити експерименти, аналізувати результати і вносити відповідні зміни для досягнення кращих результатів.</li>
+            </ul><br>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

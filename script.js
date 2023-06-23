@@ -1,6 +1,39 @@
-﻿// import { log } from "@tensorflow/tfjs";
-
 let json_data;
+let model;
+
+// Upload model
+$('#upload-model').click(function() {
+    $('<input type="file">').on('change', function(event) {
+    let file = event.target.files[0];
+    let reader = new FileReader();
+    
+    reader.onload = function(e) {
+        let modelData = e.target.result;
+        tf.loadLayersModel(modelData).then(function(model) {
+            logData('Модель успішно завантажена: <br>' + model);
+        }).catch(function(error) {
+            console.log(error);
+            logData('Сталася помилка при завантаженні моделі.');
+        });
+    };
+    
+    reader.readAsArrayBuffer(file);
+    }).click();
+});
+
+// Download model
+$('#download-model').click(function() {
+    try {
+        model.save('downloads://deepthinker_model').then(function() {
+        logData('Модель успішно збережена');
+        }).catch(function(error) {
+        logData('Помилка при збереженні моделі: <br>' + error);
+        });
+    } catch (error) {
+        console.log(error);
+        logData('Не вдалося завантажити модель. Можливо, ви її ще не створили.')
+    }
+});
 
 // Update file data
 $("#dataset-file").change(async function(e) {
@@ -117,7 +150,7 @@ $("#model-params").submit(function(e) {
     //INPUTS_TENSOR.dispose();
 
     logData("Creating a model...");
-    const model = createModel(
+    model = createModel(
         model_data.input_values.length,
         model_data.output_values.length, 
         model_data.layers);
@@ -269,36 +302,56 @@ function onBatchEnd(batch, logs) {
     logData('Accuracy: ' + logs.acc);
   }
 
-// Evaluate model
-function evaluate() {
-    tf.tidy(function () {
-        let newInput = normalize(
-            tf.tensor2d([[750, 1]]),
-            FEATURE_RESULTS.MIN_VALUES,
-            FEATURE_RESULTS.MAX_VALUES
-        );
+//   // Predict values
+// function evaluate() {
+//     tf.tidy(function () {
+//         let newInput = normalize(
+//             tf.tensor2d([[750, 1]]),
+//             FEATURE_RESULTS.MIN_VALUES,
+//             FEATURE_RESULTS.MAX_VALUES
+//         );
 
-        let output = model.predict(newInput.NORMALIZED_VALUES);
-        output.print();
-    });
+//         let output = model.predict(newInput.NORMALIZED_VALUES);
+//         output.print();
+//     });
 
-    logData(tf.memory().numTensors);
-}
+//     logData(tf.memory().numTensors);
+// }
 
 // Add new fields for prediction
 function addPredictFields(input_values) {
     $("#predict-fields").html("");
+    $("#predict-button").html("");
     for (let i of input_values) {
         $("#predict-fields").append(
-            `<div class="predict-value"><label for="${i}">${i}</label>
-            <input type="text" id="${i}" name="${i}" class="number-parameter"><br></div>`
+            `<div class="predict-value"><label for="predict_${i}">${i}</label>
+            <input type="text" id="predict_${i}" name="predict_${i}" class="number-parameter predict-input"><br></div>`
         );
     }
 
-    $("#predict-fields").append(
-        `<br><div class="button smal centrify" id="predict">Predict</div>`
+    $("#predict-button").append(
+        `<div class="button smal centrify">Predict</div>`
     );
 }
+
+// Predict values
+$('#predict-button').click(function(e) {
+    e.preventDefault();
+    try {
+        let predict_inputs = $(".predict-input")
+        let predict_values = []
+        for (let i of predict_inputs) {
+            predict_values.push(Number(i.value))
+        }
+        logData("Input values:<br>" + JSON.stringify(predict_values));
+        let output = model.predict(tf.tensor2d([predict_values]));
+        console.log(output);
+        logData("Predicted values:<br>" + JSON.stringify(Array.from(output.dataSync())))
+    } catch (error) {
+        console.log(error);
+        logData('Вхідні значення для передбачення нових значень введені некоректно')
+    }
+});
 
 // Log data
 function logData(data) {

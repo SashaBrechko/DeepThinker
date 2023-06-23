@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>DeepThinker</title>
-    <link href="favicon.ico" rel="icon" type="image/x-icon" />
+    <link href="images/favicon.ico" rel="icon" type="image/x-icon" />
     <link href="styles.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
@@ -12,8 +12,11 @@
 <body>
     <div class="header">
         <div class="left-side-header">
-            <h1 class="main-heading">DeepThinker</h1>
-            <p class="main-description">The tool for learning and creating neural networks</p>
+            <img src="images/logo.png" id="logo">
+            <div>
+                <h1 class="main-heading">DeepThinker</h1>
+                <p class="main-description">The tool for learning and creating neural networks</p>
+            </div>
         </div>
         <div class="right-side-header">
             <div class="menu">
@@ -72,14 +75,14 @@
                 <div class="tooltip-input">
                     <div class="tooltip">?<span class="tooltiptext"><i>Batch size</i> (розмір пакета) визначає кількість прикладів даних, які одночасно подаються на вхід моделі для обробки під час тренування. Використання пакетів дозволяє нейронній мережі ефективно працювати з великими обсягами даних.</span></div>
                     <label for="batch-size">Batch size:</label><br>
-                    <input class="number-parameter" type="number" id="batch-size" name="batch-size" placeholder="5" required><br><br>
+                    <input class="number-parameter" type="number" min="1" id="batch-size" name="batch-size" placeholder="5" required><br><br>
                 </div>
 
                 <!--Epochs-->
                 <div class="tooltip-input">
                     <div class="tooltip">?<span class="tooltiptext">Параметр <i>Epochs</i> відображає кількість повних прогонів навчального набору даних через модель під час тренування. Кожна епоха означає, що модель побачила всі доступні дані один раз і здійснила корекцію вагів на підставі помилок, які вона зробила.</span></div>
                     <label for="epochs">Epochs:</label><br>
-                    <input class="number-parameter" type="number" max="1000" id="epochs" name="epochs" placeholder="100" required><br><br>
+                    <input class="number-parameter" type="number" min="1" max="1000" id="epochs" name="epochs" placeholder="100" required><br><br>
                 </div>
 
                 <!--Loss-->
@@ -121,9 +124,11 @@
                 </div>
 
                 <br /><input type="submit" value="Train model" class="button" id="train-button" /><br>
-                <br /><br />
+                <br />
+                <hr class="small-model-divider" />
 
                 <div id="predict-fields"></div>
+                <br><div id="predict-button"></div>
 
             </form>
         </div>

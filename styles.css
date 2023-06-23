@@ -1,8 +1,9 @@
-﻿body {
+body {
     font-size: 18px;
     color: #335c67;
     background-color: #f2f4f5;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin: 0;
 }
 
 p {
@@ -30,7 +31,7 @@ a {
     background-color: #f2f4f5;
 }
 
-.button:hover {
+.button:hover, .goto-button:hover {
     background-color: #ddd;
 }
 
@@ -49,6 +50,13 @@ a {
 
 #add-layer, #remove-layer {
     margin: 10px;
+}
+
+#logo {
+    width: 70px;
+    height: 70px;
+    vertical-align: middle;
+    margin-right: 10px;
 }
 
 .main-heading, .main-description {
@@ -110,13 +118,22 @@ a {
     display: flex;
     justify-content: space-between;
     padding: 10px 0;
-    background-color: rgba(242, 244, 245, 0.9);
+    background-color: rgba(220, 228, 230, 0.9);
     border-bottom: 1px solid #335c67;
 }
 
-.left-side-header, .right-side-header {
+.right-side-header {
     vertical-align: middle;
-    margin: auto;
+    margin: auto 0;
+}
+
+.header {
+    justify-content: space-evenly;
+}
+
+.left-side-header {
+    justify-content: center;
+    display: flex;
 }
 
 hr {
